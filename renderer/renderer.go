@@ -5,6 +5,6 @@ package renderer
 import "errors"
 
 // Render image from text using font
-func RenderImage(text string, font string) (image []byte,  err error) {
-    return nil, errors.New("Not implemented")
+func RenderImage(text string, font string) (image []byte, err error) {
+	return nil, errors.New("Not implemented")
 }
