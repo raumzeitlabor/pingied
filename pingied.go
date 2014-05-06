@@ -36,8 +36,8 @@ func showImage(_ IDMessage) (int, string) {
 
 func main() {
 	m := martini.Classic()
-	m.Post("/create/text", binding.Bind(DisplayMessage{}), createText)
-	m.Post("/create/image", binding.Bind(ImageMessage{}), createImage)
-	m.Post("/show", binding.Bind(IDMessage{}), showImage)
+	m.Post("/text", binding.Bind(DisplayMessage{}), createText)
+	m.Post("/image", binding.Bind(ImageMessage{}), createImage)
+	m.Post("/display", binding.Bind(IDMessage{}), displayImage)
 	m.Run()
 }
