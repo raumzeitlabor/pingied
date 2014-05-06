@@ -34,15 +34,10 @@ func showImage(_ IDMessage) (int, string) {
     return http.StatusNotImplemented, sha
 }
 
-func showScroll(_ IDMessage) (int, string) {
-    return http.StatusNotImplemented, ""
-}
-
 func main() {
 	m := martini.Classic()
 	m.Post("/create/text", binding.Bind(DisplayMessage{}), createText)
 	m.Post("/create/image", binding.Bind(ImageMessage{}), createImage)
-	m.Post("/show/image", binding.Bind(IDMessage{}), showImage)
-	m.Post("/show/scroll", binding.Bind(IDMessage{}), showScroll)
+	m.Post("/show", binding.Bind(IDMessage{}), showImage)
 	m.Run()
 }
