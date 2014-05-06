@@ -1,5 +1,8 @@
 package main
 
+import "github.com/raumzeitlabor/pingied/renderer"
+import "github.com/raumzeitlabor/pingied/util"
+
 import "github.com/go-martini/martini"
 import "github.com/martini-contrib/binding"
 import "fmt"
@@ -21,6 +24,11 @@ type IDMessage struct {
 }
 
 func createText(msg DisplayMessage) (int, string) {
+    image, err := renderer.RenderImage(msg.Text, msg.Font)
+    if err != nil {
+        return http.StatusInternalServerError, err.Error()
+    }
+    util.StoreImage(image)
     return http.StatusOK, fmt.Sprintf("Hello %s\n", msg.Text)
 }
 
@@ -29,7 +37,7 @@ func createImage(_ ImageMessage) (int, string) {
     return http.StatusNotImplemented, sha
 }
 
-func showImage(_ IDMessage) (int, string) {
+func displayImage(_ IDMessage) (int, string) {
     var sha = ""
     return http.StatusNotImplemented, sha
 }
