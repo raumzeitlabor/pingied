@@ -7,6 +7,8 @@ import "github.com/go-martini/martini"
 import "github.com/martini-contrib/binding"
 import "fmt"
 import "net/http"
+import "mime/multipart"
+import "io/ioutil"
 
 // DisplayMessage is a struct for formdata from /create/text calls
 type DisplayMessage struct {
@@ -16,6 +18,8 @@ type DisplayMessage struct {
 
 // ImageMessage is a struct to contain a file from /create/image calls
 type ImageMessage struct {
+    Title      string                `form:"title"`
+    TextUpload *multipart.FileHeader `form:"txtUpload"`
 }
 
 // IDMessage is a struct to contain a ID from /show/image and /show/scroll calls
@@ -32,8 +36,16 @@ func createText(msg DisplayMessage) (int, string) {
 	return http.StatusOK, fmt.Sprintf("Hello %s\n", msg.Text)
 }
 
-func createImage(_ ImageMessage) (int, string) {
-	var sha = ""
+func createImage(msg ImageMessage) (int, string) {
+    file, err := msg.TextUpload.Open()
+	if err != nil {
+		return http.StatusInternalServerError, err.Error()
+	}
+    data, err := ioutil.ReadAll(file)
+	if err != nil {
+		return http.StatusInternalServerError, err.Error()
+	}
+    sha, _, err := util.StoreImage(data)
 	return http.StatusNotImplemented, sha
 }
 
@@ -45,7 +57,7 @@ func displayImage(_ IDMessage) (int, string) {
 func main() {
 	m := martini.Classic()
 	m.Post("/text", binding.Bind(DisplayMessage{}), createText)
-	m.Post("/image", binding.Bind(ImageMessage{}), createImage)
+	m.Post("/image", binding.MultipartForm(ImageMessage{}), createImage)
 	m.Post("/display", binding.Bind(IDMessage{}), displayImage)
 	m.Run()
 }
