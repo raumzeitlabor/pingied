@@ -49,9 +49,12 @@ func createImage(msg ImageMessage) (int, string) {
 	return http.StatusNotImplemented, sha
 }
 
-func displayImage(_ IDMessage) (int, string) {
-	var sha = ""
-	return http.StatusNotImplemented, sha
+func displayImage(msg IDMessage) (int, string) {
+    _, err := util.RetrieveImage(msg.ID)
+    if err != nil {
+        return http.StatusInternalServerError, err.Error()
+    }
+	return http.StatusNotImplemented, msg.ID
 }
 
 func main() {
